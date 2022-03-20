@@ -40,3 +40,64 @@ The autonomous driving is still a heavyly-researched domain though, considring i
 ### Try to identify vehicle features that appear stable in most of the inspected examples and describe them  
 
 By observing multiple vehicles with differnet angles, parts of cars that are visible to the sensors appaear to be stable. This depends on location of the vehicle, for example cars located in front of the sensor car rear parts appear to be more stable but cars located behind the sensor car front parts seem more stable.  
+
+
+### Visualize range image channels (ID_S1_EX1)
+#### show_range_image
+<img src="img/ID_S1_EX1.png" width="600"/>  
+
+An example range image
+
+
+#### show_pcl
+<img src="img/ID_S1_EX1_1.png" width="600"/>  
+
+An example point cloud visualization
+
+<img src="img/ID_S1_EX1_2.png" width="600"/>  
+
+An example point cloud visualization
+
+### Convert sensor coordinates to BEV-map coordinates (ID_S2_EX1)
+#### bev_from_pcl
+
+<img src="img/ID_S2_EX1.png" width="600"/>  
+
+An example visualization into BEV map coordinates
+
+<img src="img/ID_S2_EX1_2.png" width="600"/>  
+
+An example visualization into BEV map coordinates
+
+<img src="img/ID_S2_EX1_3.png" width="600"/>  
+
+An example intensity layer from the BEV map
+
+
+<img src="img/ID_S2_EX1_4.png" width="600"/>  
+
+An example height layer from the BEV map
+
+### Add a second model from a GitHub repo (ID_S3_EX1)
+
+<img src="img/ID_S3_EX1.png" width="600"/>  
+
+3D bounding boxes added to the images
+
+<img src="img/ID_S3_EX1_1.png" width="600"/>  
+
+3D bounding boxes added to the images
+
+
+### Compute intersection-over-union between labels and detections (ID_S4_EX1)
+#### objdet_eval
+
+`precision = 0.9508196721311475, recall = 0.9477124183006536`
+
+<img src="img/ID_S4_EX1.png" width="600"/>  
+
+Graphing performance metrics  
+
+<img src="img/ID_S4_EX1_1.png" width="600"/>  
+
+Using the labels, metrics should get perfect scores
