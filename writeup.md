@@ -8,6 +8,13 @@ Please use this starter template to answer the following questions:
 
 In this project, I used fuse measurements from LiDAR and camera and track vehicles over time  using real-world data from the Waymo Open Dataset, detected objects in 3D point clouds.  
 To detect vehicles, a deep-learning approach is used on LiDAR data based on a birds-eye view perspective of the 3D point-cloud. Also, a series of performance measures is used to evaluate the performance of the detection approach.  
+As a first step, I implemented an EKF to track a single real-world target with lidar measurement input over time.  
+Then I implemented the track management to initialize and delete tracks, set a track state and a track score.  
+Later I implemented a single nearest neighbor data association to associate measurements to tracks.  
+Finally I implemented the nonlinear camera measurement model.  
+The most difficult part of the project is debugging.  Since most of the functionalities I implemented "work" somehow, even when an unwanted performance occurs, usually I don't see very exxplicit errors or signs that something is wrong so I need to go through entire related parts to check what's wrong.  
+
+
 
 
 ### 2. Do you see any benefits in camera-lidar fusion compared to lidar-only tracking (in theory and in your concrete results)? 　　
@@ -41,7 +48,7 @@ The autonomous driving is still a heavyly-researched domain though, considring i
 
 By observing multiple vehicles with differnet angles, parts of cars that are visible to the sensors appaear to be stable. This depends on location of the vehicle, for example cars located in front of the sensor car rear parts appear to be more stable but cars located behind the sensor car front parts seem more stable.  
 
-
+## Midterm visualization
 ### Visualize range image channels (ID_S1_EX1)
 #### show_range_image
 <img src="img/ID_S1_EX1.png" width="600"/>  
@@ -101,3 +108,18 @@ Graphing performance metrics
 <img src="img/ID_S4_EX1_1.png" width="600"/>  
 
 Using the labels, metrics should get perfect scores
+
+## Final project visualization
+### Step 1
+
+<img src="img/step1_0.png.png" width="600"/>  
+<img src="img/step1_1.png.png" width="600"/>  
+
+### Step 2
+
+<img src="img/step2_0.png.png" width="600"/>  
+
+### Step 3
+
+### Step 4
+<img src="img/step4_0.png.png" width="600"/>  
