@@ -120,6 +120,7 @@ Using the labels, metrics should get perfect scores
 <img src="img/step2_0.png" width="600"/>  
 
 ### Step 3
+<img src="img/step3_0.png" width="600"/>  
 
 ### Step 4
 <img src="img/step4_0.png" width="600"/>  
