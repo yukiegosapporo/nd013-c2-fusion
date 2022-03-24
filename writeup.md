@@ -112,14 +112,14 @@ Using the labels, metrics should get perfect scores
 ## Final project visualization
 ### Step 1
 
-<img src="img/step1_0.png.png" width="600"/>  
-<img src="img/step1_1.png.png" width="600"/>  
+<img src="img/step1_0.png" width="600"/>  
+<img src="img/step1_1.png" width="600"/>  
 
 ### Step 2
 
-<img src="img/step2_0.png.png" width="600"/>  
+<img src="img/step2_0.png" width="600"/>  
 
 ### Step 3
 
 ### Step 4
-<img src="img/step4_0.png.png" width="600"/>  
+<img src="img/step4_0.png" width="600"/>  
