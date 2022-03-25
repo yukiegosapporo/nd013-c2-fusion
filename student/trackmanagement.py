@@ -138,33 +138,31 @@ class Trackmanagement:
         # - delete tracks if the score is too low or P is too big (check params.py for parameters that might be helpful, but
         # feel free to define your own parameters)
         ############
-
+        d_thre = params.delete_threshold
+        max_P = params.max_P
         # decrease score for unassigned tracks
-
         for i in unassigned_tracks:
-
-            track = self.track_list[i]
-
-            # check visibility
+            u = self.track_list[i]
             if meas_list:  # if not empty
-                if meas_list[0].sensor.in_fov(track.x):
-                    track.score -= 1.0 / params.window
-                    if track.score <= 0.0:
-                        track.score = 0.0
-                    # your code goes here
-                    if (
-                        (
-                            track.state in ["confirmed"]
-                            and track.score < params.delete_threshold
-                        )
-                        # or (track.state in ["tentative"] and track.score < 0.7)
-                        or (
-                            track.P[0, 0] > params.max_P or track.P[1, 1] > params.max_P
-                        )
-                    ):
-                        self.delete_track(track)
+                # check for visibility
+                if meas_list[0].sensor.in_fov(u.x):
+                    u.score -= 3 / params.window
+            else:
+                u.score -= 3 / params.window
+            if u.score <= 0.0:
+                u.score = 0.0
 
         # delete old tracks
+        for track in self.track_list:
+            st = track.state
+            sc = track.score
+            P = track.P
+            if (
+                (st in ["confirmed"] and sc < d_thre)
+                or ((P[0, 0] > max_P or P[1, 1] > max_P))
+                or (sc < 0.1)
+            ):
+                self.delete_track(track)
 
         ############
         # END student code
@@ -198,14 +196,10 @@ class Trackmanagement:
         ############
         track.score += 1.0 / params.window
         track.score = min(1.0, track.score)
-        if track.state == "tentative" and track.score > params.confirmed_threshold:
+        if track.score > params.confirmed_threshold:
             track.state = "confirmed"
-        elif (
-            track.state == "initialized"
-            and track.score > params.confirmed_threshold / 2
-        ):
+        else:
             track.state = "tentative"
-
         ############
         # END student code
         ############
