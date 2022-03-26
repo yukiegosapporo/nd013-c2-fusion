@@ -19,9 +19,7 @@ import os
 import sys
 
 PACKAGE_PARENT = ".."
-SCRIPT_DIR = os.path.dirname(
-    os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__)))
-)
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 import misc.params as params
@@ -43,8 +41,14 @@ class Association:
         # - update list of unassigned measurements and unassigned tracks
         ############
         # the following only works for at most one track and one measurement
+        # self.association_matrix = np.matrix([])  # reset matrix
         N = len(track_list)  # N tracks
         M = len(meas_list)  # M measurements
+
+        # initialize association matrix
+        # self.association_matrix = np.inf * np.ones((N, M))
+        # self.unassigned_tracks = list(range(N))
+        # self.unassigned_meas = list(range(M))
 
         self.association_matrix = np.matrix([])  # reset matrix
         self.unassigned_tracks = []  # reset lists
@@ -109,8 +113,11 @@ class Association:
         ############
         # TODO Step 3: return True if measurement lies inside gate, otherwise False
         ############
-
-        limit = chi2.ppf(params.gating_threshold, df=2)
+        if sensor.name == "lidar":
+            dof = 2
+        else:
+            dof = 1
+        limit = chi2.ppf(params.gating_threshold, df=dof)
         if MHD < limit:
             return True
         else:
@@ -124,13 +131,14 @@ class Association:
         ############
         # TODO Step 3: calculate and return Mahalanobis distance
         ############
+        # H = np.matrix([[1, 0, 0, 0], [0, 1, 0, 0]])
         H = meas.sensor.get_H(track.x)
+        # gamma = meas.z - H * track.x
         gamma = KF.gamma(track, meas)
         S = KF.S(track, meas, H)
-        MHD = np.sqrt(
-            gamma.transpose() * np.linalg.inv(S) * gamma
-        )  # Mahalanobis distance formula
-        return MHD
+        # S = H * track.P * H.transpose() + meas.R
+        mhd = np.sqrt(gamma.transpose() * np.linalg.inv(S) * gamma)  # Mahalanobis distance formula
+        return mhd
 
         ############
         # END student code
@@ -141,10 +149,7 @@ class Association:
         self.associate(manager.track_list, meas_list, KF)
 
         # update associated tracks with measurements
-        while (
-            self.association_matrix.shape[0] > 0
-            and self.association_matrix.shape[1] > 0
-        ):
+        while self.association_matrix.shape[0] > 0 and self.association_matrix.shape[1] > 0:
 
             # search for next association between a track and a measurement
             ind_track, ind_meas = self.get_closest_track_and_meas()

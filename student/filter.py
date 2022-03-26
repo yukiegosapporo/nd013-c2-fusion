@@ -18,9 +18,7 @@ import os
 import sys
 
 PACKAGE_PARENT = ".."
-SCRIPT_DIR = os.path.dirname(
-    os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__)))
-)
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 import misc.params as params
 
@@ -103,9 +101,12 @@ class Filter:
         ############
         # Step 1: calculate and return residual gamma
         ############
+        # try:
         H = meas.sensor.get_hx(track.x)
+        # except:
+        #     H = 0
         gamma = meas.z - H
-        return gamma  # innovation/residual
+        return gamma
 
     def S(self, track, meas, H):
         ############

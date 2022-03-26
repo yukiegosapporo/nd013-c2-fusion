@@ -19,9 +19,7 @@ import os
 import sys
 
 PACKAGE_PARENT = ".."
-SCRIPT_DIR = os.path.dirname(
-    os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__)))
-)
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 import misc.params as params
 
@@ -31,9 +29,7 @@ class Track:
 
     def __init__(self, meas, id):
         print("creating track no.", id)
-        M_rot = meas.sensor.sens_to_veh[
-            0:3, 0:3
-        ]  # rotation matrix from sensor to vehicle coordinates
+        M_rot = meas.sensor.sens_to_veh[0:3, 0:3]  # rotation matrix from sensor to vehicle coordinates
 
         ############
         # TODO Step 2: initialization:
@@ -48,18 +44,10 @@ class Track:
         self.x = np.zeros((6, 1))
         self.x[0:3] = pos_veh[0:3]
         P_pos = M_rot * meas.R * np.transpose(M_rot)
-        sigma_p44 = (
-            params.sigma_p44
-        )  # initial setting for estimation error covariance P entry for vx
-        sigma_p55 = (
-            params.sigma_p55
-        )  # initial setting for estimation error covariance P entry for vy
-        sigma_p66 = (
-            params.sigma_p66
-        )  # initial setting for estimation error covariance P entry for vz
-        P_vel = np.matrix(
-            [[sigma_p44 ** 2, 0, 0], [0, sigma_p55 ** 2, 0], [0, 0, sigma_p66 ** 2]]
-        )
+        sigma_p44 = params.sigma_p44  # initial setting for estimation error covariance P entry for vx
+        sigma_p55 = params.sigma_p55  # initial setting for estimation error covariance P entry for vy
+        sigma_p66 = params.sigma_p66  # initial setting for estimation error covariance P entry for vz
+        P_vel = np.matrix([[sigma_p44 ** 2, 0, 0], [0, sigma_p55 ** 2, 0], [0, 0, sigma_p66 ** 2]])
 
         # overall covariance initialization
         self.P = np.zeros((6, 6))
@@ -138,29 +126,24 @@ class Trackmanagement:
         # - delete tracks if the score is too low or P is too big (check params.py for parameters that might be helpful, but
         # feel free to define your own parameters)
         ############
-        d_thre = params.delete_threshold
-        max_P = params.max_P
         # decrease score for unassigned tracks
         for i in unassigned_tracks:
             u = self.track_list[i]
             if meas_list:  # if not empty
                 # check for visibility
                 if meas_list[0].sensor.in_fov(u.x):
-                    u.score -= 3 / params.window
-            else:
-                u.score -= 3 / params.window
+                    u.score -= 1.0 / params.window
+            # else:
+            #     u.score -= 1.0 / params.window
             if u.score <= 0.0:
                 u.score = 0.0
 
         # delete old tracks
         for track in self.track_list:
-            st = track.state
-            sc = track.score
-            P = track.P
             if (
-                (st in ["confirmed"] and sc < d_thre)
-                or ((P[0, 0] > max_P or P[1, 1] > max_P))
-                or (sc < 0.1)
+                (track.state in ["confirmed"] and track.score < params.delete_threshold)
+                or ((track.P[0, 0] > params.max_P or track.P[1, 1] > params.max_P))
+                or (track.score < 0.05)
             ):
                 self.delete_track(track)
 
@@ -170,9 +153,7 @@ class Trackmanagement:
 
         # initialize new track with unassigned measurement
         for j in unassigned_meas:
-            if (
-                meas_list[j].sensor.name == "lidar"
-            ):  # only initialize with lidar measurements
+            if meas_list[j].sensor.name == "lidar":  # only initialize with lidar measurements
                 self.init_track(meas_list[j])
 
     def addTrackToList(self, track):
@@ -194,6 +175,7 @@ class Trackmanagement:
         # - increase track score
         # - set track state to 'tentative' or 'confirmed'
         ############
+
         track.score += 1.0 / params.window
         track.score = min(1.0, track.score)
         if track.score > params.confirmed_threshold:

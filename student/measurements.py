@@ -66,7 +66,7 @@ class Sensor:
         pos_sens = self.veh_to_sens * pos_veh
         visible = False
         if pos_sens[0] > 0:
-            alpha = np.arctan(pos_sens[1] / pos_sens[0])
+            alpha = np.arctan2(pos_sens[1], pos_sens[0])
             if alpha > self.fov[0] and alpha < self.fov[1]:
                 visible = True
 
@@ -95,16 +95,15 @@ class Sensor:
             pos_sens = self.veh_to_sens * pos_veh
 
             # - project from camera to image coordinates
-            try:
+            if pos_sens[0] > 0.00001:
                 cam_cood = np.zeros((2, 1))
                 cam_cood[0] = self.c_i - (self.f_i * pos_sens[1] / pos_sens[0])
                 cam_cood[1] = self.c_j - (self.f_j * pos_sens[2] / pos_sens[0])
                 return cam_cood
 
             # - make sure to not divide by zero, raise an error if needed
-            except ZeroDivisionError:
-                print("Division by zero in camera measurement")
-                raise ZeroDivisionError
+            else:
+                raise ValueError("Division by zero")
             # - return h(x)
             ############
 
